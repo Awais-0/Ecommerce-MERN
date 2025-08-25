@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stripe Checkout Test</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <h2>Test Stripe Checkout</h2>
+
+  <input type="number" id="orderId" placeholder="Enter Order ID" />
+  <button id="checkoutBtn">Pay Now</button>
+
+  <script>
+    const stripe = Stripe("pk_test_51RxQSYGOilXZJXTaE8T8zArwRg5qUS3YTBKBHJW7yqUvfYPHnsBDNIZHMJhw0D7CxAEcIlo8ARUKMlygwehr4wPC007eyC4HgH"); // 🔑 Replace with your real Publishable Key
+
+    document.getElementById("checkoutBtn").addEventListener("click", async () => {
+      const orderId = document.getElementById("orderId").value;
+
+      if (!orderId) {
+        alert("Please enter an order ID");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:4000/api/payment/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // Include cookies for authentication
+          body: JSON.stringify({ orderId }),
+        });
+
+        const data = await res.json();
+
+        if (data.id) {
+          const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+          if (error) alert(error.message);
+        } else {
+            console.error("Error creating checkout session:", data);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error creating checkout session");
+      }
+    });
+  </script>
+</body>
+</html>
