@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from "react";
-import ProductModal from "../../components/admin/productModal";
+import CategoriesModal from "../../components/admin/categoriesModal";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 
 
-const Products = () => {
-  const [products, setProducts] = useState([]);
+const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // ✅ Fetch products
-  useEffect(() => {
-    fetch("http://localhost:4000/api/products/getAllProducts", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
-  }, []);
 
   // ✅ Fetch categories
   useEffect(() => {
@@ -27,9 +20,9 @@ const Products = () => {
   }, []);
 
   // ✅ Add Product API
-  const handleAddProduct = async (formData) => {
+  const handleAddCategory = async (formData) => {
     try {
-      const res = await fetch("http://localhost:4000/api/products/addProduct", {
+      const res = await fetch("http://localhost:4000/api/categories/addCategory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -38,8 +31,8 @@ const Products = () => {
 
       const data = await res.json();
       if (res.ok) {
-        const newProduct = { id: data.productId, ...formData, imageUrl: "/vite.svg" };
-        setProducts((prev) => [...prev, newProduct]);
+        const newCategory = { id: data.categoryId, ...formData, imageUrl: "/vite.svg" };
+        setCategories((prev) => [...prev, newCategory]);
         setShowModal(false);
       } else {
         console.error("Add failed:", data.error);
@@ -50,10 +43,10 @@ const Products = () => {
   };
 
   // ✅ Update Product API
-  const handleUpdateProduct = async (formData) => {
+  const handleCategoryUpdate = async (formData) => {
     try {
       const res = await fetch(
-        `http://localhost:4000/api/products/updateProduct/${selectedProduct.id}`,
+        `http://localhost:4000/api/categories/updateCategory/${selectedCategory.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -64,11 +57,11 @@ const Products = () => {
 
       const data = await res.json();
       if (res.ok) {
-        setProducts((prev) =>
-          prev.map((p) => (p.id === selectedProduct.id ? { ...p, ...formData } : p))
+        setCategories((prev) =>
+          prev.map((c) => (c.id === selectedCategory.id ? { ...c, ...formData } : c))
         );
         setShowModal(false);
-        setSelectedProduct(null);
+        setSelectedCategory(null);
       } else {
         console.error("Update failed:", data.error);
       }
@@ -80,12 +73,12 @@ const Products = () => {
   // ✅ Delete Product
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:4000/api/products/deleteProduct/${id}`, {
+      const res = await fetch(`http://localhost:4000/api/categories/deleteCategory/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
       if (res.ok) {
-        setProducts((prev) => prev.filter((p) => p.id !== id));
+        setCategories((prev) => prev.filter((c) => c.id !== id));
       }
     } catch (err) {
       console.error("Error deleting product:", err);
@@ -100,7 +93,7 @@ const Products = () => {
           onClick={() => { setShowModal(true); setModalMode("add"); }}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
-          + Add Product
+          + Add Category
         </button>
       </div>
 
@@ -110,27 +103,27 @@ const Products = () => {
           <thead className="text-xs text-gray-200 text-center uppercase bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
             <tr>
               <th className="px-6 py-3">Image</th>
-              <th className="px-6 py-3">Product</th>
-              <th className="px-6 py-3">Qty</th>
-              <th className="px-6 py-3">Price</th>
+              <th className="px-6 py-3">Category</th>
+              <th className="px-6 py-3">Description</th>
+              <th className="px-6 py-3">Total products</th>
               <th className="px-6 py-3">Action</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
-              <tr key={p.id} className="bg-white dark:bg-gray-900 border-b dark:text-gray-100 text-center">
+            {categories.map((c) => (
+              <tr key={c.id} className="bg-white dark:bg-gray-900 border-b dark:text-gray-100 text-center">
                 <td className="p-4 flex items-center justify-center">
-                  <img src={p.imageUrl || "/vite.svg"} alt={p.name} className="w-16 md:w-20" />
+                  <img src={c.imageUrl || "/vite.svg"} alt={c.name} className="w-18 md:w-12" />
                 </td>
-                <td className="px-6 py-4 font-semibold dark:text-gray-200">{p.name}</td>
-                <td className="px-6 py-4">{p.stock_quantity || 0}</td>
-                <td className="px-6 py-4 font-semibold dark:text-gray-200">${Number(p.price).toFixed(2)}</td>
+                <td className="px-6 py-4 font-semibold dark:text-gray-200">{c.name}</td>
+                <td className="px-6 py-4">{c.description || '-'}</td>
+                <td className="px-6 py-4 font-semibold dark:text-gray-200">{c.total_products ? c.total_products : '0'}</td>
                 <td className="px-6 py-2">
                   <div className="flex items-center justify-center">
                     <FaEdit
-                    onClick={() => { setSelectedProduct(p); setModalMode("update"); setShowModal(true); }}
+                    onClick={() => { setSelectedCategory(c); setModalMode("update"); setShowModal(true); }}
                     className="text-blue-600 hover:underline text-2xl m-2 hover:cursor-pointer"/>
-                  <MdDelete onClick={() => handleDelete(p.id)} className="text-red-600 hover:underline hover:cursor-pointer text-2xl m-2" />
+                  <MdDelete onClick={() => handleDelete(c.id)} className="text-red-600 hover:underline hover:cursor-pointer text-2xl m-2" />
                   </div>
                 </td>
               </tr>
@@ -140,11 +133,11 @@ const Products = () => {
       </div>
 
       {/* 🔹 Reusable Modal */}
-      <ProductModal
+      <CategoriesModal
         show={showModal}
-        onClose={() => { setShowModal(false); setSelectedProduct(null); }}
-        onSubmit={modalMode === "add" ? handleAddProduct : handleUpdateProduct}
-        initialData={modalMode === "update" ? selectedProduct : {}}
+        onClose={() => { setShowModal(false); setSelectedCategory(null); }}
+        onSubmit={modalMode === "add" ? handleAddCategory : handleCategoryUpdate}
+        initialData={modalMode === "update" ? selectedCategory : {}}
         categories={categories}
         mode={modalMode}
       />
@@ -152,4 +145,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Categories;

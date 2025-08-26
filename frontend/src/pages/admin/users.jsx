@@ -106,16 +106,18 @@ const Users = () => {
                   <td className="px-6 py-4">{u.email}</td>
                   <td className="px-6 py-4">{u.role}</td>
                   <td className="px-6 py-2 flex gap-2">
-                    <FaEdit
+                    <div className="">
+                      <FaEdit
                       onClick={() => { setShowModal(true); setModalMode("edit"); setSelectedUser(u); }}
-                      className="text-blue-600 text-2xl cursor-pointer"
+                      className="text-blue-600 text-xl cursor-pointer"
                     />
                     {currentUser?.id !== u.id && (
                       <MdDelete
                         onClick={() => handleDelete(u.id)}
-                        className="text-red-600 text-2xl cursor-pointer"
+                        className="text-red-600 text-xl cursor-pointer"
                       />
                     )}
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -68,7 +68,7 @@ const Signup = () => {
           {success && <p className="text-green-600 text-center">{success}</p>}
 
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-sm font-semibold text-gray-700">name</label>
+            <label htmlFor="name" className="text-sm font-semibold text-gray-700">Name</label>
             <input
               type="text"
               id="name"

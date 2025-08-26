@@ -14,8 +14,14 @@ const Index = () => {
   return (
     <div>
       <div className="w-screen min-h-screen flex items-center justify-center bg-gradient-to-bl from-blue-400 to-blue-900">
-            <div className="w-[500px] p-8 bg-white/75 rounded-xl backdrop-blur-md shadow-lg">
-              <h2 className='text-2xl font-bold mb-5 ml-22'>Welcome to my Website</h2>
+        <img
+        src="/categoriesBg.jpg" // Prefer optimized webp/avif
+        alt="Shop Banner"
+        className="absolute top-0 left-0 w-full h-full object-cover"
+        loading="eager"
+      />
+            <div className="w-[500px] p-8 bg-gray-400/75 rounded-xl backdrop-blur-md shadow-lg text-center">
+              <h2 className='text-2xl font-bold mb-7'>Welcome to my E-commerce platform</h2>
               <div className='flex flex-row gap-1.5 items-center justify-center'>
                 <MyButton onClick={register} value='Register' />
                 <MyButton onClick={login} value='Login' />

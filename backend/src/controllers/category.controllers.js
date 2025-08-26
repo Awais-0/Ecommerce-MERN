@@ -91,12 +91,17 @@ export const deleteCategory = (req, res) => {
 // ✅ Get all categories
 export const getAllCategories = (req, res) => {
     console.log('getting categories for user: ', req.user.userId);
-    const query = "SELECT * FROM categories ORDER BY id DESC"; // latest first
+    const query = `SELECT c.*, COUNT(p.id) AS total_products
+    FROM categories c
+    JOIN products p ON c.id = p.category_id
+    GROUP BY c.id
+    ORDER BY c.id DESC`; // latest first
     connection.query(query, (error, results) => {
         if (error) {
             console.error("Error fetching categories:", error);
             return res.status(500).json({ error: "Database error" });
         }
+        console.log(results)
         return res.status(200).json(results);
     });
 };

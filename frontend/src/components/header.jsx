@@ -4,6 +4,7 @@ import { FaShoppingCart, FaBoxOpen, FaTags, FaSignOutAlt, FaShoppingBag } from "
 import { RiAdminFill } from "react-icons/ri";
 import { useState } from "react";
 import axios from "axios";
+import { BiSolidCategory } from "react-icons/bi";
 
 export default function Header() {
   const location = useLocation();
@@ -68,7 +69,7 @@ export default function Header() {
               isActive("/categories") ? "text-blue-600 font-semibold" : "text-gray-300"
             }`}
           >
-            <FaTags />
+            <BiSolidCategory />
             Categories
             {isActive("/categories") && (
               <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-600"></span>

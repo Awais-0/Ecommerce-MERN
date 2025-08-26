@@ -26,9 +26,9 @@ const ProductCard = React.memo(function ProductCard({ product, onAdd }) {
         <p className="text-gray-700 font-semibold">
           Price: ${Number(product.price).toFixed(2)}
         </p>
-        <p className="text-sm text-gray-500">
+        {product.stock_quantity > 0 ? <p className="text-sm text-gray-500">
           Stock: {product.stock_quantity}
-        </p>
+        </p> : <p>Will be available soon</p>}
 
         {/* ⭐ Rating System */}
         <div className="flex items-center gap-1 mt-2">
@@ -45,12 +45,17 @@ const ProductCard = React.memo(function ProductCard({ product, onAdd }) {
       </div>
 
       <div className="flex flex-row gap-2 mt-4">
-        <button
+        {product.stock_quantity > 0 ? <button
           onClick={() => onAdd(product)}
           className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
           Add to Cart
-        </button>
+        </button> : <button
+          disabled
+          className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg transition"
+        >
+          Sold out
+        </button>}
 
         <button
           // onClick={() => onWishlist(product)}
@@ -190,7 +195,7 @@ export default function ProductsPage() {
   return (
   <div className="flex flex-col min-h-screen bg-gradient-to-bl from-gray-200 to-gray-300 relative">
     {/* Confetti background (runs infinitely) */}
-    <ConfettiBackground />
+    {/* <ConfettiBackground /> */}
 
     {/* Header */}
     <Header />
