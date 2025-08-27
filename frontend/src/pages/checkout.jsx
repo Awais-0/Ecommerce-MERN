@@ -41,7 +41,6 @@ const CheckoutPage = () => {
       });
 
       const data = await res.json();
-
       if (data.id) {
         // Redirect user to Stripe Checkout
         const { error } = await stripe.redirectToCheckout({ sessionId: data.id });

@@ -5,68 +5,118 @@ import Header from "../components/header";
 import ConfettiBackground from "../components/ConfettiBg";
 
 // Small, memoized product card to avoid re-renders
+// Small, memoized product card to avoid re-renders
 const ProductCard = React.memo(function ProductCard({ product, onAdd }) {
   const [rating, setRating] = useState(0);
+  const [flipped, setFlipped] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between hover:bg-gray-50">
-      <div>
-        <div className="flex items-center justify-center mb-4 shadow rounded-lg overflow-hidden">
-          <img
-            src={product.imageUrl || "/vite.svg"}
-            alt={product.name}
-            className="w-full h-48 object-cover"
-            loading="lazy"
-          />
+    <div
+      className="w-full h-[430px] perspective cursor-pointer"
+      onClick={() => setFlipped(!flipped)}
+    >
+      <div
+        className="relative w-full h-full transition-transform duration-700"
+        style={{
+          transformStyle: "preserve-3d",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
+      >
+        {/* FRONT SIDE */}
+        <div
+          className="absolute w-full h-full bg-white rounded-xl shadow hover:shadow-lg transition p-5 flex flex-col justify-between hover:bg-gray-50"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <div>
+            <div className="flex items-center justify-center mb-4 shadow rounded-lg overflow-hidden">
+              <img
+                src={product.imageUrl || "/vite.svg"}
+                alt={product.name}
+                className="w-full h-48 object-cover"
+                loading="lazy"
+              />
+            </div>
+            <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">
+              {product.name}
+            </h3>
+
+            <p className="text-gray-700 font-semibold">
+              Price: ${Number(product.price).toFixed(2)}
+            </p>
+            {product.stock_quantity > 0 ? (
+              <p className="text-sm text-gray-500">
+                Stock: {product.stock_quantity}
+              </p>
+            ) : (
+              <p>Will be available soon</p>
+            )}
+
+            {/* ⭐ Rating System */}
+            <div className="flex items-center gap-1 mt-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering flip
+                    setRating(star);
+                  }}
+                  className={`cursor-pointer text-xl transition ${
+                    star <= rating ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-2 mt-4">
+            {product.stock_quantity > 0 ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent triggering flip
+                  onAdd(product);
+                }}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                Add to Cart
+              </button>
+            ) : (
+              <button
+                disabled
+                className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg transition"
+              >
+                Sold out
+              </button>
+            )}
+
+            <button
+              onClick={(e) => e.stopPropagation()} // prevent flip
+              className="w-10 h-10 flex items-center justify-center bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+            >
+              <FaRegHeart />
+            </button>
+          </div>
         </div>
-        <h3 className="text-lg font-bold text-gray-800 mb-1">
-          {product.name}
-        </h3>
 
-        <p className="text-gray-700 font-semibold">
-          Price: ${Number(product.price).toFixed(2)}
-        </p>
-        {product.stock_quantity > 0 ? <p className="text-sm text-gray-500">
-          Stock: {product.stock_quantity}
-        </p> : <p>Will be available soon</p>}
-
-        {/* ⭐ Rating System */}
-        <div className="flex items-center gap-1 mt-2">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <FaStar
-              key={star}
-              onClick={() => setRating(star)}
-              className={`cursor-pointer text-xl transition ${
-                star <= rating ? "text-yellow-400" : "text-gray-300"
-              }`}
-            />
-          ))}
+        {/* BACK SIDE */}
+        <div
+          className="absolute w-full h-full bg-amber-200 text-gray-800 flex flex-col items-center justify-center rounded-xl shadow-xl p-6"
+          style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+        >
+          <h3 className="text-xl font-bold mb-4">{product.name}</h3>
+          <p className="text-sm leading-relaxed">
+            This is a dummy description for <b>{product.name}</b>.  
+            It flips when you click the card.  
+            Here you could show longer product details, reviews, or extra info.
+          </p>
+          <p className="mt-3 text-xs text-gray-600">
+            Click again to flip back.
+          </p>
         </div>
-      </div>
-
-      <div className="flex flex-row gap-2 mt-4">
-        {product.stock_quantity > 0 ? <button
-          onClick={() => onAdd(product)}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Add to Cart
-        </button> : <button
-          disabled
-          className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg transition"
-        >
-          Sold out
-        </button>}
-
-        <button
-          // onClick={() => onWishlist(product)}
-          className="w-10 h-10 flex items-center justify-center bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-        >
-          <FaRegHeart />
-        </button>
       </div>
     </div>
   );
 });
+
 
 const PAGE_SIZE = 20; // render 20 cards at a time to keep DOM light
 

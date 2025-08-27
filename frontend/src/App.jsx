@@ -8,6 +8,7 @@ import CartPage from './pages/userCart.jsx'
 import CategoriesPage from './pages/categories.jsx'
 import Checkout from './pages/checkout.jsx'
 import AdminDashboard from './pages/admin/adminDashboard.jsx'
+import PaymentSuccess from './pages/paymentSuccess.jsx'
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
           <Route path='/categories' element={<CategoriesPage />} />
           <Route path='/checkout' element={<Checkout />} />
           <Route path='/admindashboard' element={<AdminDashboard />} />
+          <Route path='/paymentSuccess' element={<PaymentSuccess />} />
         </Routes>
       </BrowserRouter>
   )

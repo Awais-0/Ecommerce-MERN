@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authCheck from "../middlewares/auth.middleware.js";
-import { createOrder, getAllOrders, getOrderDetails, getUserOrders, updateOrderStatus } from "../controllers/order.controllers.js";
+import { createOrder, getAllOrders, getAllPaidOrdersWithPayments, getOrderDetails, getUserOrders, updateOrderStatus } from "../controllers/order.controllers.js";
 import { verifyAdmin } from "../middlewares/adminCheck.middleware.js";
 
 const orderRouter = Router();
@@ -10,6 +10,7 @@ orderRouter.get("/getOrder", authCheck, getUserOrders);
 orderRouter.get("/orders/:id", authCheck, getOrderDetails);
 
 orderRouter.get("/getAllOrders", authCheck, verifyAdmin, getAllOrders);
+orderRouter.get("/getAllPaidOrdersWithPayments", authCheck, verifyAdmin, getAllPaidOrdersWithPayments);
 orderRouter.put("/orders/:id/status", authCheck, updateOrderStatus);
 
 export default orderRouter;
